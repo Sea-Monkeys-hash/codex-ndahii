@@ -1,0 +1,281 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Complete System</title>
+    <style>
+        /* General Styles */
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #388d71;
+            margin: 0;
+            padding: 0;
+        }
+
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: white;
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        h2, h3 {
+            color: #333;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        input[type="text"], input[type="password"], input[type="number"] {
+            width: 100%;
+            padding: 10px;
+            margin: 10px 0;
+            border-radius: 5px;
+            border: 1px solid #ccc;
+        }
+
+        button {
+            padding: 10px 20px;
+            font-size: 16px;
+            background-color: #ff7043;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            margin-top: 10px;
+        }
+
+        button:hover {
+            background-color: #e64a19;
+        }
+
+        .navbar {
+            background-color: #333;
+            padding: 10px;
+            text-align: center;
+        }
+
+        .navbar a {
+            color: white;
+            margin: 0 15px;
+            text-decoration: none;
+        }
+
+        /* Dashboard styles */
+        .balance {
+            font-size: 24px;
+            font-weight: bold;
+            color: #1e88e5;
+        }
+
+        .balance-section, .transaction-section, .video-section {
+            margin-bottom: 20px;
+            padding: 20px;
+            background-color: #e3f2fd;
+            border-radius: 8px;
+        }
+
+        .video-section button {
+            background-color: #ff7043;
+            color: white;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+
+        /* Pages specific styles */
+        .content-section {
+            margin-bottom: 20px;
+        }
+
+    </style>
+</head>
+<body>
+
+    <!-- Navigation Bar -->
+    <div class="navbar">
+        
+        <a href="#login" onclick="showPage('login')">Login</a>
+        <a href="#register" onclick="showPage('register')">Register</a>
+        <a href="#contact" onclick="showPage('contact')">Contact Us</a>
+    </div>
+
+    <!-- Registration Page -->
+    <div id="register" class="container" style="display: none;">
+        <h2>Register</h2>
+        <form id="registerForm">
+            <div class="form-group">
+                <label for="username">Username</label>
+                <input type="text" id="username" name="username" required>
+            </div>
+            <div class="form-group">
+                <label for="password">Password</label>
+                <input type="password" id="password" name="password" required>
+            </div>
+            <button type="submit">Register</button>
+        </form>
+    </div>
+
+    <!-- Login Page -->
+    <div id="login" class="container" style="display: none;">
+        <h2>Login</h2>
+        <form id="loginForm">
+            <div class="form-group">
+                <label for="loginUsername">Username</label>
+                <input type="text" id="loginUsername" required>
+            </div>
+            <div class="form-group">
+                <label for="loginPassword">Password</label>
+                <input type="password" id="loginPassword" required>
+            </div>
+            <button type="submit">Login</button>
+        </form>
+    </div>
+
+    <!-- Dashboard Page -->
+    <div id="dashboard" class="container" style="display: none;">
+        <h2>Dashboard</h2>
+        <div class="balance-section">
+            <h3>Your Balance</h3>
+            <p id="balance" class="balance">$<span id="balanceAmount">0</span></p>
+        </div>
+        <div class="transaction-section">
+            <a href="#deposit" onclick="showPage('deposit')">
+                <button>Deposit</button>
+            </a>
+            <a href="#withdraw" onclick="showPage('withdraw')">
+                <button>Withdraw</button>
+            </a>
+        </div>
+        <div class="video-section">
+            <h3>Watch Video</h3>
+            <button onclick="watchVideo()">Watch Video and Earn</button>
+        </div>
+    </div>
+
+    <!-- Deposit Page -->
+    <div id="deposit" class="container" style="display: none;">
+        <h2>Deposit Funds</h2>
+        <form id="depositForm">
+            <div class="form-group">
+                <label for="depositAmount">Amount to Deposit</label>
+                <input type="number" id="depositAmount" required>
+            </div>
+            <button type="submit">Deposit</button>
+        </form>
+    </div>
+
+    <!-- Withdraw Page -->
+    <div id="withdraw" class="container" style="display: none;">
+        <h2>Withdraw Funds</h2>
+        <form id="withdrawForm">
+            <div class="form-group">
+                <label for="withdrawAmount">Amount to Withdraw (Min: 20,000 Naira)</label>
+                <input type="number" id="withdrawAmount" required>
+            </div>
+            <button type="submit">Withdraw</button>
+        </form>
+    </div>
+
+    <!-- Contact Us Page -->
+    <div id="contact" class="container" style="display: none;">
+        <h2>Contact Us</h2>
+        <p>If you have any questions, feel free to contact us.</p>
+        <p>Email:daudajopseh506@gmail.com</p>
+    </div>
+
+    <script>
+        let userBalance = 0;
+        let user = null;
+
+        function showPage(pageId) {
+            // Hide all pages
+            const pages = document.querySelectorAll('.container');
+            pages.forEach(page => page.style.display = 'none');
+
+            // Show the clicked page
+            document.getElementById(pageId).style.display = 'block';
+        }
+
+        // Show the login page by default
+        showPage('login');
+
+        // Handle Registration
+        document.getElementById('registerForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            const username = document.getElementById('username').value;
+            const password = document.getElementById('password').value;
+
+            if (username && password) {
+                user = { username, password, balance: 0 };
+                alert('Registration successful! You can now login.');
+                showPage('login');
+            }
+        });
+
+        // Handle Login
+        document.getElementById('loginForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            const username = document.getElementById('loginUsername').value;
+            const password = document.getElementById('loginPassword').value;
+
+            if (user && user.username === username && user.password === password) {
+                alert('Login successful!');
+                showPage('dashboard');
+                updateBalance();
+            } else {
+                alert('Invalid credentials.');
+            }
+        });
+
+        // Handle Deposit
+        document.getElementById('depositForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            const amount = parseInt(document.getElementById('depositAmount').value);
+            if (amount > 0) {
+                user.balance += amount;
+                alert(`Deposit of ₦${amount} successful!`);
+                updateBalance();
+                showPage('dashboard');
+            } else {
+                alert('Please enter a valid amount.');
+            }
+        });
+
+        // Handle Withdraw
+        document.getElementById('withdrawForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            const amount = parseInt(document.getElementById('withdrawAmount').value);
+            if (amount >= 20000 && amount <= user.balance) {
+                user.balance -= amount;
+                alert(`Withdrawal of ₦${amount} successful!`);
+                updateBalance();
+                showPage('dashboard');
+            } else if (amount < 20000) {
+                alert('Minimum withdrawal amount is ₦20,000');
+            } else {
+                alert('Insufficient balance.');
+            }
+        });
+
+        // Update Balance on the Dashboard
+        function updateBalance() {
+            document.getElementById('balanceAmount').textContent = user.balance;
+        }
+
+        // Simulate Watching Video
+        function watchVideo() {
+            const earnedAmount = 1000; // For each video watched
+            user.balance += earnedAmount;
+            updateBalance();
+            alert(`You watched a video and earned ₦${earnedAmount}`);
+        }
+    </script>
+
+</body>
+</html>
